@@ -1,0 +1,46 @@
+openapi: "3.1.0"
+info:
+  title: Rak Boim Public Status API
+  version: "1.0.0"
+  description: REST API publik untuk melihat daftar tarif resmi Boim Laundry dan melacak status cucian melalui 4 digit terakhir nomor telepon.
+servers:
+  - url: http://127.0.0.1:8000/api/v1
+paths:
+  /services:
+    get:
+      summary: Daftar tarif layanan resmi Boim Laundry
+      operationId: listServices
+      tags: [Services]
+      parameters:
+        - name: limit
+          in: query
+          schema: { type: integer, default: 20, maximum: 100 }
+      responses:
+        "200":
+          description: Daftar tarif layanan terpaginasi
+  /storages/track:
+    get:
+      summary: Lacak status cucian dengan 4 digit terakhir nomor telepon
+      operationId: trackStorageByPhoneLast4
+      tags: [Storages]
+      parameters:
+        - name: phone_last4
+          in: query
+          required: true
+          schema: { type: string, pattern: "^[0-9]{4}$", example: "5459" }
+      responses:
+        "200":
+          description: Daftar cucian pelanggan yang cocok
+        "422":
+          description: Format parameter phone_last4 tidak valid (RFC 7807 Problem Details)
+          content:
+            application/problem+json:
+              schema:
+                type: object
+                required: [type, title, status, detail]
+                properties:
+                  type: { type: string, format: uri }
+                  title: { type: string }
+                  status: { type: integer, example: 422 }
+                  detail: { type: string }
+                  instance: { type: string }
