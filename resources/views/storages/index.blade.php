@@ -1,356 +1,590 @@
 @extends('layouts.app')
 
-@section('title', 'Penataan Rak — Rak Boim')
-@section('page_title', 'Penataan Rak')
+@section('title', 'Penataan Rak')
+@section('page_title', 'Penataan Penyimpanan Cucian Rak')
+@section('page_subtitle', 'Pencarian cepat 4 digit nomor telepon, filter rak, urutan data, dan serah terima')
+
+@section('topbar_actions')
+    <a href="{{ route('storages.create') }}" class="btn-primary">+ Input Cucian Baru</a>
+@endsection
 
 @push('styles')
 <style>
-  .storage-workspace-grid {
-    display: grid;
-    grid-template-columns: 256px minmax(0, 1fr);
-    gap: 20px;
-    align-items: start;
-  }
-
-  .filter-sidebar-card {
-    background: #FFFFFF;
-    border: 1px solid var(--border-hairline);
-    border-radius: var(--radius-card);
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    position: sticky;
-    top: 76px;
-  }
-
-  .filter-block-title {
-    font-size: 11.5px;
-    font-weight: 700;
-    color: var(--ink-primary);
-    margin-bottom: 6px;
-  }
-
-  .pill-bar-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin-bottom: 16px;
-  }
-
-  .pill-group {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-
-  .pill-link {
-    padding: 7px 14px;
-    border-radius: var(--radius-md);
-    background: var(--bg-surface);
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--ink-secondary);
-    transition: all var(--dur-fast) var(--ease-apple);
-  }
-
-  .pill-link:hover {
-    background: var(--bg-surface-hover);
-    color: var(--ink-primary);
-  }
-
-  .pill-link.active {
-    background: var(--ink-primary);
-    color: #FFFFFF;
-  }
-
-  .cards-grid-3 {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 16px;
-  }
-
-  .laundry-card {
-    background: #FFFFFF;
-    border: 1px solid var(--border-hairline);
-    border-radius: var(--radius-card);
-    box-shadow: var(--shadow-card);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    transition: transform var(--dur-fast) var(--ease-apple), box-shadow var(--dur-fast) var(--ease-apple), border-color var(--dur-fast) var(--ease-apple);
-  }
-
-  .laundry-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-card-hover);
-    border-color: #B8B8C0;
-  }
-
-  .card-head {
-    background: var(--bg-surface);
-    padding: 11px 14px;
-    border-bottom: 1px solid var(--border-subtle);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 6px;
-  }
-
-  .card-body {
-    padding: 14px;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .customer-name {
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--ink-primary);
-    letter-spacing: -0.015em;
-  }
-
-  .phone-last4 {
-    color: var(--ink-primary);
-    font-weight: 700;
-    background: var(--bg-surface);
-    border: 1px solid var(--border-hairline);
-    padding: 1px 5px;
-    border-radius: 5px;
-  }
-
-  .card-foot {
-    border-top: 1px solid #ECECEF;
-    padding: 11px 14px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    background: #FFFFFF;
-  }
-
-  @media (max-width: 1280px) {
-    .cards-grid-3 {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+    .workspace-grid {
+        display: grid;
+        grid-template-columns: 268px minmax(0, 1fr);
+        gap: 20px;
+        align-items: start;
     }
-  }
 
-  @media (max-width: 900px) {
-    .storage-workspace-grid {
-      grid-template-columns: 1fr;
+    .panel-card {
+        background: var(--bg-ground);
+        border: 1px solid var(--border-hairline);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-card);
     }
-    .filter-sidebar-card {
-      position: static;
+
+    .summary-banner {
+        background: var(--bg-ground);
+        border: 1px solid var(--border-hairline);
+        border-radius: var(--radius-lg);
+        padding: 16px 18px;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        box-shadow: var(--shadow-card);
     }
-    .cards-grid-3 {
-      grid-template-columns: 1fr;
+
+    .summary-banner h1 {
+        font-size: 16px;
+        font-weight: 700;
+        letter-spacing: -0.015em;
+        color: var(--ink-primary);
+        margin-bottom: 0;
     }
-  }
+
+    .summary-banner p {
+        font-size: 12.5px;
+        color: var(--ink-muted);
+        margin-top: 3px;
+    }
+
+    .filter-col {
+        background: var(--bg-surface);
+        border: 1px solid var(--border-hairline);
+        border-radius: var(--radius-lg);
+        padding: 16px;
+        position: sticky;
+        top: 76px;
+    }
+
+    .filter-group {
+        margin-bottom: 16px;
+    }
+
+    .filter-group:last-child {
+        margin-bottom: 0;
+    }
+
+    .filter-title {
+        font-size: 11.5px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--ink-muted);
+        margin-bottom: 8px;
+    }
+
+    .input-control,
+    .select-control {
+        width: 100%;
+        padding: 8px 11px;
+        border-radius: var(--radius-md);
+        border: 1px solid var(--border-hairline);
+        background: var(--bg-ground);
+        color: var(--ink-primary);
+        font-family: inherit;
+        font-size: 13px;
+        outline: none;
+        transition: border-color 150ms var(--ease-out);
+    }
+
+    .input-control:focus,
+    .select-control:focus {
+        border-color: var(--accent);
+    }
+
+    .radio-stack {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .radio-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        color: var(--ink-secondary);
+        cursor: pointer;
+    }
+
+    .rack-mini-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 8px;
+    }
+
+    .rack-mini-item {
+        background: var(--bg-ground);
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius-sm);
+        padding: 8px 10px;
+    }
+
+    .rack-mini-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 12px;
+        margin-bottom: 5px;
+    }
+
+    .progress-track {
+        height: 5px;
+        border-radius: 999px;
+        background: var(--bg-surface);
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: var(--accent);
+        border-radius: 999px;
+    }
+
+    .progress-fill.is-full {
+        background: var(--red-ink);
+    }
+
+    .progress-fill.is-warn {
+        background: var(--amber-ink);
+    }
+
+    .toolbar-card {
+        padding: 14px 16px;
+        margin-bottom: 16px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .pill-strip {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .filter-pill {
+        padding: 6px 12px;
+        border-radius: 999px;
+        font-size: 12.5px;
+        font-weight: 500;
+        text-decoration: none;
+        color: var(--ink-secondary);
+        background: var(--bg-surface);
+        border: 1px solid transparent;
+        transition: all 150ms var(--ease-out);
+    }
+
+    .filter-pill:hover {
+        background: var(--bg-hover);
+        color: var(--ink-primary);
+    }
+
+    .filter-pill.is-active {
+        background: var(--accent);
+        color: #FFFFFF;
+        font-weight: 600;
+    }
+
+    .sort-bar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .storage-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+    }
+
+    .storage-card {
+        background: var(--bg-ground);
+        border: 1px solid var(--border-hairline);
+        border-radius: var(--radius-lg);
+        padding: 15px;
+        box-shadow: var(--shadow-card);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 12px;
+        transition: border-color 160ms var(--ease-out), box-shadow 160ms var(--ease-out);
+    }
+
+    .storage-card:hover {
+        border-color: #B8B8BE;
+        box-shadow: var(--shadow-hover);
+    }
+
+    .card-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 8px;
+    }
+
+    .rack-badge {
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 6px;
+        background: var(--accent-soft);
+        color: var(--accent);
+        font-weight: 600;
+        font-size: 11.5px;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .badge-green {
+        background: var(--green-bg);
+        color: var(--green-ink);
+    }
+
+    .badge-amber {
+        background: var(--amber-bg);
+        color: var(--amber-ink);
+    }
+
+    .badge-red {
+        background: var(--red-bg);
+        color: var(--red-ink);
+    }
+
+    .badge-neutral {
+        background: var(--bg-surface);
+        color: var(--ink-secondary);
+    }
+
+    .customer-name {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--ink-primary);
+        letter-spacing: -0.015em;
+        margin-top: 8px;
+    }
+
+    .customer-phone {
+        font-size: 12.5px;
+        color: var(--ink-muted);
+        margin-top: 2px;
+    }
+
+    .meta-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        padding-top: 10px;
+        border-top: 1px solid var(--border-light);
+        font-size: 12px;
+    }
+
+    .meta-label {
+        color: var(--ink-muted);
+        font-size: 11px;
+    }
+
+    .meta-val {
+        color: var(--ink-primary);
+        font-weight: 600;
+        margin-top: 1px;
+    }
+
+    .card-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        padding-top: 10px;
+        border-top: 1px solid var(--border-light);
+    }
+
+    .card-actions {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .empty-state {
+        padding: 40px 20px;
+        text-align: center;
+        color: var(--ink-muted);
+    }
+
+    @media (max-width: 1180px) {
+        .storage-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 900px) {
+        .workspace-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .filter-col {
+            position: static;
+        }
+
+        .storage-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .summary-banner {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
 </style>
 @endpush
 
 @section('content')
-  <!-- Operational Summary Banner -->
-  <section class="summary-banner">
+@php
+    $currentUser = auth()->user();
+    $isOwner = $currentUser && method_exists($currentUser, 'isPemilik') ? $currentUser->isPemilik() : (($currentUser->role ?? '') === 'pemilik');
+    $activeStatus = request('status', '');
+    $activeRack = request('rack_id', '');
+    $activePayment = request('payment_status', '');
+    $activeSort = request('sort', 'latest');
+    $searchQuery = request('q', '');
+@endphp
+
+<section class="summary-banner">
     <div>
-      <h1>Penataan Penyimpanan Cucian Rak</h1>
-      <p>Pantau slot rak aktif, verifikasi 4 digit terakhir nomor telepon pelanggan, dan perbarui status serah terima.</p>
+        <h1>Penataan Penyimpanan Cucian Rak</h1>
+        <p>Pantau slot rak aktif, verifikasi 4 digit terakhir nomor telepon pelanggan, dan perbarui status serah terima.</p>
     </div>
-    <a href="{{ route('laundry-storages.create') }}" class="btn-primary">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      <span>Input Cucian Baru</span>
-    </a>
-  </section>
+    <a href="{{ route('storages.create') }}" class="btn-primary">+ Input Cucian Baru</a>
+</section>
 
-  <!-- 2-Column Content: Filter Sidebar (256px) + Cards Grid -->
-  <div class="storage-workspace-grid">
-    <!-- Filter Panel -->
-    <aside class="filter-sidebar-card">
-      <form method="GET" action="{{ route('laundry-storages.index') }}" style="display:flex; flex-direction:column; gap:14px;">
-        <div>
-          <div class="filter-block-title">Cari Nota / 4 Digit Telp</div>
-          <input
-            type="text"
-            name="search"
-            id="quickSearchInput"
-            value="{{ request('search') }}"
-            class="form-input"
-            placeholder="Nama, 4 digit telp, nota..."
-          >
-        </div>
-
-        <div>
-          <div class="filter-block-title">Filter ID Rak</div>
-          <select name="rack_id" class="form-select mono" style="font-size:12.5px;">
-            <option value="">Semua Rak (6 Slot)</option>
-            @foreach($racks ?? [] as $rack)
-              <option value="{{ $rack->id }}" {{ (string) request('rack_id') === (string) $rack->id ? 'selected' : '' }}>
-                {{ $rack->rack_code }} ({{ number_format($rack->current_load_kg, 1) }}/{{ number_format($rack->max_capacity_kg, 0) }} kg)
-              </option>
-            @endforeach
-          </select>
-        </div>
-
-        <div>
-          <div class="filter-block-title">Status Penyimpanan</div>
-          <select name="storage_status" class="form-select">
-            <option value="">Semua Status</option>
-            <option value="tersimpan" {{ request('storage_status') === 'tersimpan' ? 'selected' : '' }}>Tersimpan</option>
-            <option value="siap_diambil" {{ request('storage_status') === 'siap_diambil' ? 'selected' : '' }}>Siap Diambil</option>
-            <option value="selesai" {{ request('storage_status') === 'selesai' ? 'selected' : '' }}>Selesai</option>
-          </select>
-        </div>
-
-        <div>
-          <div class="filter-block-title">Status Pembayaran</div>
-          <select name="payment_status" class="form-select">
-            <option value="">Semua Pembayaran</option>
-            <option value="lunas" {{ request('payment_status') === 'lunas' ? 'selected' : '' }}>Lunas</option>
-            <option value="belum_lunas" {{ request('payment_status') === 'belum_lunas' ? 'selected' : '' }}>Belum Lunas</option>
-          </select>
-        </div>
-
-        <div>
-          <div class="filter-block-title">Urutkan</div>
-          <select name="sort" class="form-select">
-            <option value="latest" {{ request('sort', 'latest') === 'latest' ? 'selected' : '' }}>Terbaru Masuk</option>
-            <option value="oldest" {{ request('sort') === 'oldest' ? 'selected' : '' }}>Terlama di Rak</option>
-            <option value="weight_desc" {{ request('sort') === 'weight_desc' ? 'selected' : '' }}>Berat Terbesar</option>
-            <option value="name_asc" {{ request('sort') === 'name_asc' ? 'selected' : '' }}>Nama Pelanggan A–Z</option>
-          </select>
-        </div>
-
-        <div style="display:flex; flex-direction:column; gap:6px; padding-top:4px;">
-          <button type="submit" class="btn-primary full">Terapkan Filter</button>
-          @if(request()->hasAny(['search', 'rack_id', 'storage_status', 'payment_status', 'sort']))
-            <a href="{{ route('laundry-storages.index') }}" class="btn-secondary" style="width:100%; justify-content:center;">Reset Filter</a>
-          @endif
-        </div>
-      </form>
-    </aside>
-
-    <!-- Main Cards Grid -->
-    <div>
-      <!-- Quick Status Pill Bar -->
-      <div class="pill-bar-row">
-        <div class="pill-group">
-          <a href="{{ route('laundry-storages.index') }}" class="pill-link {{ !request('storage_status') ? 'active' : '' }}">Semua</a>
-          <a href="{{ route('laundry-storages.index', ['storage_status' => 'tersimpan']) }}" class="pill-link {{ request('storage_status') === 'tersimpan' ? 'active' : '' }}">Tersimpan</a>
-          <a href="{{ route('laundry-storages.index', ['storage_status' => 'siap_diambil']) }}" class="pill-link {{ request('storage_status') === 'siap_diambil' ? 'active' : '' }}">Siap Diambil</a>
-          <a href="{{ route('laundry-storages.index', ['storage_status' => 'selesai']) }}" class="pill-link {{ request('storage_status') === 'selesai' ? 'active' : '' }}">Selesai</a>
-        </div>
-        <span class="mono" style="font-size:12px; color:var(--ink-muted);">
-          Total: {{ method_exists($storages, 'total') ? $storages->total() : $storages->count() }} nota
-        </span>
-      </div>
-
-      @if($storages->isEmpty())
-        <div class="apple-card" style="padding:44px 20px; text-align:center; color:var(--ink-muted);">
-          <div style="font-weight:700; color:var(--ink-primary); margin-bottom:4px;">Belum ada data cucian pada filter ini</div>
-          <div style="font-size:13px; margin-bottom:14px;">Tambahkan transaksi penataan rak baru atau reset filter pencarian.</div>
-          <a href="{{ route('laundry-storages.create') }}" class="btn-primary">+ Input Cucian Baru</a>
-        </div>
-      @else
-        <div class="cards-grid-3">
-          @foreach($storages as $storage)
-            @php
-              $digits = preg_replace('/\D/', '', $storage->customer_phone);
-              $last4 = strlen($digits) >= 4 ? substr($digits, -4) : $digits;
-              $prefix = strlen($digits) > 4 ? substr($digits, 0, -4) : '';
-              $isExpress = optional($storage->serviceCategory)->service_type === 'kiloan_express';
-            @endphp
-            <article class="laundry-card">
-              <div class="card-head">
-                <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
-                  <span class="rack-pill">{{ optional($storage->rack)->rack_code ?? '-' }}</span>
-                  <span class="status-pill status-{{ $storage->storage_status }}">
-                    {{ ucwords(str_replace('_', ' ', $storage->storage_status)) }}
-                  </span>
-                </div>
-                <span class="mono" style="font-size:11px; color:var(--ink-muted);">{{ $storage->storage_code }}</span>
-              </div>
-
-              <div class="card-body">
-                <div class="customer-name">{{ $storage->customer_name }}</div>
-
-                <div class="mono" style="font-size:12.5px; color:var(--ink-muted);">
-                  {{ $prefix }}<span class="phone-last4">{{ $last4 }}</span>
-                </div>
-
-                <div style="display:flex; align-items:center; justify-content:space-between; font-size:12.5px; font-weight:600; color:var(--ink-secondary);">
-                  <span>{{ optional($storage->serviceCategory)->service_name ?? 'Layanan Laundry' }}</span>
-                  <span class="mono" style="color:var(--ink-primary);">
-                    {{ number_format($storage->laundry_weight, 1) }} {{ optional($storage->serviceCategory)->unit_label ?? 'kg' }}
-                  </span>
-                </div>
-
-                <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-top:2px;">
-                  @if($isExpress)
-                    <span style="font-size:11px; font-weight:600; padding:2px 7px; border-radius:6px; background:var(--status-amber-bg); color:var(--status-amber);">Express</span>
-                  @endif
-                  @if($storage->include_delivery)
-                    <span style="font-size:11px; font-weight:600; padding:2px 7px; border-radius:6px; background:var(--accent-soft); color:var(--accent);">Antar-Jemput PP</span>
-                  @endif
-                  <span style="font-size:11px; color:var(--ink-muted);">
-                    {{ \Carbon\Carbon::parse($storage->stored_at)->format('d M, H:i') }}
-                  </span>
-                </div>
-              </div>
-
-              <div class="card-foot">
-                <div>
-                  <div class="mono" style="font-size:14.5px; font-weight:700; color:var(--ink-primary);">
-                    Rp {{ number_format($storage->total_price, 0, ',', '.') }}
-                  </div>
-                  <div style="display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:600; color:{{ $storage->payment_status === 'lunas' ? 'var(--status-green)' : 'var(--status-amber)' }};">
-                    <span class="dot {{ $storage->payment_status === 'lunas' ? 'dot-green' : 'dot-amber' }}"></span>
-                    <span>{{ $storage->payment_status === 'lunas' ? 'Lunas' : 'Belum Lunas' }}</span>
-                  </div>
-                </div>
-
-                <div style="display:flex; align-items:center; gap:6px;">
-                  <a href="{{ route('laundry-storages.edit', $storage->id) }}" class="btn-secondary" style="padding:6px 10px; font-size:12px;">
-                    Edit / Rak
-                  </a>
-
-                  @if(auth()->check() && auth()->user()->isPemilik() && $storage->storage_status === 'selesai')
-                    <form action="{{ route('laundry-storages.destroy', $storage->id) }}" method="POST" onsubmit="return true;">
-                      @csrf
-                      @method('DELETE')
-                      <button type="submit" class="btn-danger" style="padding:6px 9px; font-size:12px;">Hapus</button>
-                    </form>
-                  @endif
-                </div>
-              </div>
-            </article>
-          @endforeach
-        </div>
-
-        @if(method_exists($storages, 'links'))
-          <div style="margin-top:18px;">
-            {{ $storages->withQueryString()->links() }}
-          </div>
+<div class="workspace-grid">
+    <form method="GET" action="{{ route('storages.index') }}" class="filter-col">
+        @if($activeStatus)
+            <input type="hidden" name="status" value="{{ $activeStatus }}">
         @endif
-      @endif
-    </div>
-  </div>
-@endsection
+        @if($activeSort)
+            <input type="hidden" name="sort" value="{{ $activeSort }}">
+        @endif
 
-@push('scripts')
-<script>
-  // Shortcut "/" langsung fokus ke kotak pencarian 4 digit telepon
-  document.addEventListener('keydown', function (e) {
-    const tag = document.activeElement.tagName;
-    if (e.key === '/' && tag !== 'INPUT' && tag !== 'TEXTAREA' && tag !== 'SELECT') {
-      e.preventDefault();
-      const searchBox = document.getElementById('quickSearchInput');
-      if (searchBox) searchBox.focus();
-    }
-  });
-</script>
-@endpush
+        <div class="filter-group">
+            <div class="filter-title">Cari Nota / 4 Digit Telp</div>
+            <input
+                type="text"
+                name="q"
+                value="{{ $searchQuery }}"
+                placeholder="Contoh: 4920, Budi, STR-..."
+                class="input-control mono"
+            >
+        </div>
+
+        <div class="filter-group">
+            <div class="filter-title">Filter ID Rak</div>
+            <select name="rack_id" class="select-control">
+                <option value="">Semua Rak</option>
+                @foreach($racks ?? [] as $rack)
+                    <option value="{{ $rack->id }}" {{ (string)$activeRack === (string)$rack->id ? 'selected' : '' }}>
+                        {{ $rack->rack_code }} ({{ number_format($rack->current_load_kg, 1) }}/{{ number_format($rack->max_capacity_kg, 0) }} kg)
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <div class="filter-title">Status Pembayaran</div>
+            <div class="radio-stack">
+                <label class="radio-row">
+                    <input type="radio" name="payment_status" value="" {{ $activePayment === '' ? 'checked' : '' }}>
+                    <span>Semua Pembayaran</span>
+                </label>
+                <label class="radio-row">
+                    <input type="radio" name="payment_status" value="lunas" {{ $activePayment === 'lunas' ? 'checked' : '' }}>
+                    <span>Lunas</span>
+                </label>
+                <label class="radio-row">
+                    <input type="radio" name="payment_status" value="belum_lunas" {{ $activePayment === 'belum_lunas' ? 'checked' : '' }}>
+                    <span>Belum Lunas</span>
+                </label>
+            </div>
+        </div>
+
+        <div style="display:flex; gap:8px; margin-bottom:16px;">
+            <button type="submit" class="btn-primary" style="flex:1;">Terapkan</button>
+            <a href="{{ route('storages.index') }}" class="btn-secondary">Reset</a>
+        </div>
+
+        @if(!empty($racks) && count($racks) > 0)
+            <div class="filter-group">
+                <div class="filter-title">Okupansi Rak</div>
+                <div class="rack-mini-list">
+                    @foreach($racks as $rack)
+                        @php
+                            $maxCap = max((float)$rack->max_capacity_kg, 1);
+                            $pct = min(100, round(((float)$rack->current_load_kg / $maxCap) * 100));
+                            $barClass = $pct >= 95 ? 'is-full' : ($pct >= 75 ? 'is-warn' : '');
+                        @endphp
+                        <div class="rack-mini-item">
+                            <div class="rack-mini-top">
+                                <span class="mono" style="font-weight:600; color:var(--ink-primary);">{{ $rack->rack_code }}</span>
+                                <span class="mono" style="color:var(--ink-muted);">{{ $pct }}%</span>
+                            </div>
+                            <div class="progress-track">
+                                <div class="progress-fill {{ $barClass }}" style="width: {{ $pct }}%;"></div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        @endif
+    </form>
+
+    <div>
+        <div class="panel-card toolbar-card">
+            <div class="pill-strip">
+                <a href="{{ route('storages.index', array_filter(['q' => $searchQuery, 'rack_id' => $activeRack, 'payment_status' => $activePayment, 'sort' => $activeSort])) }}"
+                   class="filter-pill {{ $activeStatus === '' ? 'is-active' : '' }}">
+                    Semua
+                </a>
+                <a href="{{ route('storages.index', array_filter(['status' => 'tersimpan', 'q' => $searchQuery, 'rack_id' => $activeRack, 'payment_status' => $activePayment, 'sort' => $activeSort])) }}"
+                   class="filter-pill {{ $activeStatus === 'tersimpan' ? 'is-active' : '' }}">
+                    Tersimpan
+                </a>
+                <a href="{{ route('storages.index', array_filter(['status' => 'siap_diambil', 'q' => $searchQuery, 'rack_id' => $activeRack, 'payment_status' => $activePayment, 'sort' => $activeSort])) }}"
+                   class="filter-pill {{ $activeStatus === 'siap_diambil' ? 'is-active' : '' }}">
+                    Siap Diambil
+                </a>
+                <a href="{{ route('storages.index', array_filter(['status' => 'selesai', 'q' => $searchQuery, 'rack_id' => $activeRack, 'payment_status' => $activePayment, 'sort' => $activeSort])) }}"
+                   class="filter-pill {{ $activeStatus === 'selesai' ? 'is-active' : '' }}">
+                    Selesai
+                </a>
+            </div>
+
+            <form method="GET" action="{{ route('storages.index') }}" class="sort-bar">
+                @if($searchQuery)<input type="hidden" name="q" value="{{ $searchQuery }}">@endif
+                @if($activeRack)<input type="hidden" name="rack_id" value="{{ $activeRack }}">@endif
+                @if($activePayment)<input type="hidden" name="payment_status" value="{{ $activePayment }}">@endif
+                @if($activeStatus)<input type="hidden" name="status" value="{{ $activeStatus }}">@endif
+
+                <span style="font-size:12px; color:var(--ink-muted);">Urutkan:</span>
+                <select name="sort" onchange="this.form.submit()" class="select-control" style="width:auto; padding:6px 10px; font-size:12.5px;">
+                    <option value="latest" {{ $activeSort === 'latest' ? 'selected' : '' }}>Terbaru Masuk</option>
+                    <option value="oldest" {{ $activeSort === 'oldest' ? 'selected' : '' }}>Terlama di Rak</option>
+                    <option value="heaviest" {{ $activeSort === 'heaviest' ? 'selected' : '' }}>Berat Terbesar</option>
+                    <option value="name_asc" {{ $activeSort === 'name_asc' ? 'selected' : '' }}>Nama Pelanggan (A–Z)</option>
+                </select>
+            </form>
+        </div>
+
+        @if(isset($storages) && count($storages) > 0)
+            <div class="storage-grid">
+                @foreach($storages as $item)
+                    @php
+                        $st = $item->storage_status ?? 'tersimpan';
+                        $pay = $item->payment_status ?? 'belum_lunas';
+                        $statusBadgeClass = match($st) {
+                            'selesai' => 'badge-green',
+                            'siap_diambil' => 'badge-amber',
+                            default => 'badge-neutral',
+                        };
+                        $statusLabel = match($st) {
+                            'selesai' => 'Selesai',
+                            'siap_diambil' => 'Siap Diambil',
+                            default => 'Tersimpan',
+                        };
+                        $serviceName = optional($item->serviceCategory)->service_name ?? 'Layanan Laundry';
+                        $isExpress = str_contains(strtolower($serviceName), 'express') || (($item->serviceCategory->service_type ?? '') === 'kiloan_express');
+                    @endphp
+
+                    <article class="storage-card">
+                        <div>
+                            <div class="card-top">
+                                <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                                    <span class="rack-badge mono">{{ optional($item->rack)->rack_code ?? 'TANPA RAK' }}</span>
+                                    @if($isExpress)
+                                        <span class="status-badge badge-red">Express</span>
+                                    @endif
+                                </div>
+                                <span class="status-badge {{ $statusBadgeClass }}">{{ $statusLabel }}</span>
+                            </div>
+
+                            <div class="customer-name">{{ $item->customer_name }}</div>
+                            <div class="customer-phone mono">
+                                {{ $item->customer_phone }} • <span style="font-size:11.5px;">{{ $item->storage_code }}</span>
+                            </div>
+
+                            <div class="meta-grid" style="margin-top:12px;">
+                                <div>
+                                    <div class="meta-label">Layanan</div>
+                                    <div class="meta-val">{{ $serviceName }}</div>
+                                </div>
+                                <div>
+                                    <div class="meta-label">Berat / Qty</div>
+                                    <div class="meta-val mono">{{ number_format((float)$item->laundry_weight, 1) }} kg</div>
+                                </div>
+                                <div>
+                                    <div class="meta-label">Total Biaya</div>
+                                    <div class="meta-val mono">Rp {{ number_format((float)$item->total_price, 0, ',', '.') }}</div>
+                                </div>
+                                <div>
+                                    <div class="meta-label">Pembayaran</div>
+                                    <div class="meta-val">
+                                        @if($pay === 'lunas')
+                                            <span style="color:var(--green-ink);">Lunas</span>
+                                        @else
+                                            <span style="color:var(--amber-ink);">Belum Lunas</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-footer">
+                            <span class="mono" style="font-size:11px; color:var(--ink-muted);">
+                                {{ optional($item->stored_at ?? $item->created_at)->format('d M H:i') }}
+                            </span>
+
+                            <div class="card-actions">
+                                <a href="{{ route('storages.edit', $item) }}" class="btn-secondary" style="padding:5px 10px; font-size:12px;">
+                                    Kelola
+                                </a>
+
+                                @if($isOwner)
+                                    <form method="POST" action="{{ route('storages.destroy', $item) }}" class="inline-form" style="margin:0;" onsubmit="return confirm('Hapus data penyimpanan {{ $item->storage_code }}?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn-danger-ghost" style="padding:5px 9px; font-size:11.5px;">
+                                            Hapus
+                                        </button>
+                                    </form>
+                                @endif
+                            </div>
+                        </div>
+                    </article>
+                @endforeach
+            </div>
+
+            @if(method_exists($storages, 'links'))
+                <div style="margin-top:18px;">
+                    {{ $storages->withQueryString()->links() }}
+                </div>
+            @endif
+        @else
+            <div class="panel-card empty-state">
+                <div style="font-weight:600; color:var(--ink-primary); margin-bottom:4px;">Belum ada data cucian yang cocok</div>
+                <div style="font-size:13px;">Coba ubah kata kunci pencarian atau reset filter di panel kiri.</div>
+            </div>
+        @endif
+    </div>
+</div>
+@endsection
