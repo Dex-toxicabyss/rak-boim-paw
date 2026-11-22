@@ -1,17 +1,16 @@
 @extends('layouts.app')
 
 @section('title', 'Input Cucian')
-@section('heading', 'Input Transaksi & Penataan Rak Baru')
+@section('page_title', 'Input Cucian ke Rak')
+@section('page_subtitle', 'Catat bundel cucian baru, pilih lokasi rak, dan hitung estimasi biaya otomatis')
+
+@section('topbar_actions')
+    <a href="{{ route('storages.index') }}" class="btn-secondary">Kembali ke Penataan Rak</a>
+@endsection
 
 @section('content')
-<div class="rb-card p-4">
-    <form method="POST" action="{{ route('storages.store') }}">
+    <form method="POST" action="{{ route('storages.store') }}" class="checkout-form">
         @csrf
         @include('storages._form')
-        <div class="mt-4 d-flex gap-2">
-            <button type="submit" class="btn btn-primary fw-semibold">Simpan ke Rak</button>
-            <a href="{{ route('storages.index') }}" class="btn btn-outline-secondary">Batal</a>
-        </div>
     </form>
-</div>
 @endsection

@@ -1,18 +1,20 @@
 @extends('layouts.app')
 
-@section('title', 'Edit Cucian')
-@section('heading', 'Edit Penataan Rak — ' . $laundryStorage->storage_code)
+@section('title', 'Kelola Cucian')
+@section('page_title', 'Kelola Cucian & Serah Terima')
+@section('page_subtitle', 'Perbarui lokasi rak, status pembayaran, atau selesaikan serah terima pelanggan')
+
+@section('topbar_actions')
+    <a href="{{ route('storages.index') }}" class="btn-secondary">Kembali ke Penataan Rak</a>
+@endsection
 
 @section('content')
-<div class="rb-card p-4">
-    <form method="POST" action="{{ route('storages.update', $laundryStorage) }}">
+    @php
+        $target = $laundryStorage ?? $storage;
+    @endphp
+    <form method="POST" action="{{ route('storages.update', $target) }}" class="checkout-form">
         @csrf
         @method('PUT')
-        @include('storages._form', ['laundryStorage' => $laundryStorage])
-        <div class="mt-4 d-flex gap-2">
-            <button type="submit" class="btn btn-primary fw-semibold">Perbarui Data</button>
-            <a href="{{ route('storages.index') }}" class="btn btn-outline-secondary">Kembali</a>
-        </div>
+        @include('storages._form')
     </form>
-</div>
 @endsection
